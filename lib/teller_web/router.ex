@@ -40,6 +40,7 @@ defmodule TellerWeb.Router do
       get "/accounts/:account_id/balances", AccountController, :get_account_balances
       get "/accounts/:account_id/details", AccountController, :get_account_details
       get "/accounts/:account_id/transactions", AccountController, :get_transactions
+
       get "/accounts/:account_id/transactions/:transaction_id",
           AccountController,
           :get_transaction

@@ -3,41 +3,18 @@ defmodule Teller.Generator do
 
   def get_accounts(user_id) do
     [_, _, account_no_range] = String.split(user_id, "_")
-    [number1, number2] = String.split(account_no_range, "-") |> Enum.map(fn x -> String.to_integer(x) end)
-    institution_length = Enum.count(@institutions)
-    names = Enum.map(number1..number2, fn x  ->
-      {name, _} = Map.get(@accounts, "acc_#{x}" )
-      name end)
-    names_length = Enum.count(names)
+
+    [number1, number2] =
+      String.split(account_no_range, "-") |> Enum.map(fn x -> String.to_integer(x) end)
 
     Enum.map(number1..number2, fn x ->
-     %{
-        "currency" => "USD",
-        "enrollment_id" => "enr_#{x}",
-        "id" => "acc_#{x}",
-        "institution" => %{
-          "id" =>
-            "#{Recase.to_snake(Enum.at(@institutions, rem(x, institution_length)))}",
-          "name" => Enum.at(@institutions, rem(x, institution_length))
-        },
-        "last_four" => "1757",
-        "links" => %{
-          "balances" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances",
-          "details" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/details",
-          "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-          "transactions" =>
-            "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/transactions"
-        },
-        "name" => Enum.at(names, rem(x, names_length)),
-        "subtype" => "checking",
-        "type" => "depository"
-      }
+      get_account("acc_#{x}")
     end)
   end
 
   def get_account(id) do
-    institution_length = Enum.count(@institutions)
-    names = @accounts |> Map.values() |> Enum.map(fn {name, _} -> name end)
+    institution_length = Enum.count(Factory.institutions_data())
+    names = Factory.accounts_constant_data() |> Map.values() |> Enum.map(fn {name, _} -> name end)
     names_length = Enum.count(names)
 
     [_, account_number] = String.split(id, "_")
@@ -45,20 +22,19 @@ defmodule Teller.Generator do
 
     %{
       "currency" => "USD",
-      "enrollment_id" => "enr_#{Recase.to_snake(Enum.at(names, account_number))}",
+      "enrollment_id" => "enr_#{account_number}",
       "id" => id,
       "institution" => %{
         "id" =>
-          "#{Recase.to_snake(Enum.at(@institutions, rem(account_number, institution_length)))}",
-        "name" => Enum.at(@institutions, rem(account_number, institution_length))
+          "#{Recase.to_snake(Enum.at(Factory.institutions_data(), rem(account_number, institution_length)))}",
+        "name" => Enum.at(Factory.institutions_data(), rem(account_number, institution_length))
       },
       "last_four" => "1757",
       "links" => %{
         "balances" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances",
         "details" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/details",
         "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-        "transactions" =>
-          "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/transactions"
+        "transactions" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/transactions"
       },
       "name" => Enum.at(names, rem(account_number, names_length)),
       "subtype" => "checking",
@@ -83,18 +59,18 @@ defmodule Teller.Generator do
   end
 
   def get_account_balances(id) do
-    {_, opening_balance} = Map.get(@accounts, id)
-      string_opening_balance = to_string(opening_balance)
+    {_, opening_balance} = Map.get(Factory.accounts_constant_data(), id)
+    string_opening_balance = to_string(opening_balance)
 
-      %{
-        "account_id" => id,
-        "available" => string_opening_balance,
-        "ledger" => string_opening_balance,
-        "links" => %{
-          "account" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-          "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances"
-        }
+    %{
+      "account_id" => id,
+      "available" => string_opening_balance,
+      "ledger" => string_opening_balance,
+      "links" => %{
+        "account" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
+        "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances"
       }
+    }
   end
 
   def get_transactions(id, nil, _count) do
@@ -129,27 +105,27 @@ defmodule Teller.Generator do
   end
 
   defp _get_transactions(id) do
-    length_m = Enum.count(@merchants)
-    length_c = Enum.count(@categories)
-    {_, ob} = Map.get(@accounts, id)
+    length_m = Enum.count(Factory.merchants_data())
+    length_c = Enum.count(Factory.categories_data())
+    {_, ob} = Map.get(Factory.accounts_constant_data(), id)
     diff = Test.get_diff()
     [_, account_number] = String.split(id, "_")
     account_number = String.to_integer(account_number)
 
     Stream.map(1..diff, fn x ->
-      tot = Enum.take(@amounts, x) |> get_sum()
-      {date, amount} = Enum.at(@amounts, x - 1)
+      tot = Enum.take(Factory.amounts_data(), x) |> get_sum()
+      {date, amount} = Enum.at(Factory.amounts_data(), x - 1)
       tx_id = "#{account_number}-#{x}" |> Base.encode64()
 
       %{
         "account_id" => id,
         "amount" => Decimal.to_string(amount),
         "date" => date,
-        "description" => "#{Enum.at(@merchants, rem(x, length_m))}",
+        "description" => "#{Enum.at(Factory.merchants_data(), rem(x, length_m))}",
         "details" => %{
-          "category" => "#{Enum.at(@merchants, rem(x, length_c))}",
+          "category" => "#{Enum.at(Factory.merchants_data(), rem(x, length_c))}",
           "counterparty" => %{
-            "name" => "#{Enum.at(@merchants, rem(x, length_c))}",
+            "name" => "#{Enum.at(Factory.merchants_data(), rem(x, length_c))}",
             "type" => "organization"
           },
           "processing_status" => "complete"
@@ -168,8 +144,8 @@ defmodule Teller.Generator do
   end
 
   def get_transaction(tx_id) do
-    length_m = Enum.count(@merchants)
-    length_c = Enum.count(@categories)
+    length_m = Enum.count(Factory.merchants_data())
+    length_c = Enum.count(Factory.categories_data())
 
     [account_id, flag] =
       tx_id
@@ -177,19 +153,19 @@ defmodule Teller.Generator do
       |> String.split("-")
 
     flag = String.to_integer(flag)
-    {_, ob} = Map.get(@accounts, "acc_#{account_id}")
-    tot = Enum.take(@amounts, flag) |> get_sum()
-    {date, amount} = Enum.at(@amounts, flag - 1)
+    {_, ob} = Map.get(Factory.accounts_constant_data(), "acc_#{account_id}")
+    tot = Enum.take(Factory.amounts_data(), flag) |> get_sum()
+    {date, amount} = Enum.at(Factory.amounts_data(), flag - 1)
 
     %{
       "account_id" => account_id,
       "amount" => Decimal.to_string(amount),
       "date" => date,
-      "description" => "#{Enum.at(@merchants, rem(flag, length_m))}",
+      "description" => "#{Enum.at(Factory.merchants_data(), rem(flag, length_m))}",
       "details" => %{
-        "category" => "#{Enum.at(@merchants, rem(flag, length_c))}",
+        "category" => "#{Enum.at(Factory.merchants_data(), rem(flag, length_c))}",
         "counterparty" => %{
-          "name" => "#{Enum.at(@merchants, rem(flag, length_c))}",
+          "name" => "#{Enum.at(Factory.merchants_data(), rem(flag, length_c))}",
           "type" => "organization"
         },
         "processing_status" => "complete"

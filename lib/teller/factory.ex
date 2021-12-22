@@ -1,5 +1,4 @@
 defmodule Teller.Factory do
-
   @merchants ["Uber", "Uber Eats", "Lyft", "Five Guys", "In-N-Out Burger", "Chick-Fil-A"]
 
   @categories [
@@ -21,7 +20,6 @@ defmodule Teller.Factory do
     "acc_12345678907" => {"Donald Trump", Decimal.from_float(1_915_130.88)}
   }
 
-
   @amounts Test.calc()
 
   def merchants_data do
@@ -35,7 +33,8 @@ defmodule Teller.Factory do
   def institutions_data do
     @institutions
   end
-  def accounts_data do
+
+  def accounts_constant_data do
     @accounts
   end
 
