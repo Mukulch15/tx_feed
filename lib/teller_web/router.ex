@@ -31,20 +31,18 @@ defmodule TellerWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", TellerWeb do
-    scope "/v1" do
-      pipe_through :auth_api
+  scope "/", TellerWeb do
+    pipe_through :auth_api
 
-      get "/accounts", AccountController, :index
-      get "/accounts/:account_id", AccountController, :show
-      get "/accounts/:account_id/balances", AccountController, :get_account_balances
-      get "/accounts/:account_id/details", AccountController, :get_account_details
-      get "/accounts/:account_id/transactions", AccountController, :get_transactions
+    get "/accounts", AccountController, :index
+    get "/accounts/:account_id", AccountController, :show
+    get "/accounts/:account_id/balances", AccountController, :get_account_balances
+    get "/accounts/:account_id/details", AccountController, :get_account_details
+    get "/accounts/:account_id/transactions", AccountController, :get_transactions
 
-      get "/accounts/:account_id/transactions/:transaction_id",
-          AccountController,
-          :get_transaction
-    end
+    get "/accounts/:account_id/transactions/:transaction_id",
+        AccountController,
+        :get_transaction
   end
 
   # Enables LiveDashboard only for development

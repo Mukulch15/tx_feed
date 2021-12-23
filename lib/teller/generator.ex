@@ -31,10 +31,10 @@ defmodule Teller.Generator do
       },
       "last_four" => "1757",
       "links" => %{
-        "balances" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances",
-        "details" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/details",
-        "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-        "transactions" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/transactions"
+        "balances" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}/balances",
+        "details" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}/details",
+        "self" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}",
+        "transactions" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}/transactions"
       },
       "name" => Enum.at(names, rem(account_number, names_length)),
       "subtype" => "checking",
@@ -49,8 +49,8 @@ defmodule Teller.Generator do
       "account_id" => id,
       "account_number" => account_number,
       "links" => %{
-        "account" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-        "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/details"
+        "account" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}",
+        "self" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}/details"
       },
       "routing_numbers" => %{
         "ach" => "586764187"
@@ -67,8 +67,8 @@ defmodule Teller.Generator do
       "available" => string_opening_balance,
       "ledger" => string_opening_balance,
       "links" => %{
-        "account" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000",
-        "self" => "https://api.teller.io/accounts/acc_nrfdnf43t2m0euedfi000/balances"
+        "account" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}",
+        "self" => "#{TellerWeb.Endpoint.url()}/accounts/#{id}/balances"
       }
     }
   end
@@ -105,40 +105,13 @@ defmodule Teller.Generator do
   end
 
   defp _get_transactions(id) do
-    length_m = Enum.count(Factory.merchants_data())
-    length_c = Enum.count(Factory.categories_data())
-    {_, ob} = Map.get(Factory.accounts_constant_data(), id)
     diff = Test.get_diff()
     [_, account_number] = String.split(id, "_")
     account_number = String.to_integer(account_number)
 
     Stream.map(1..diff, fn x ->
-      tot = Enum.take(Factory.amounts_data(), x) |> get_sum()
-      {date, amount} = Enum.at(Factory.amounts_data(), x - 1)
       tx_id = "#{account_number}-#{x}" |> Base.encode64()
-
-      %{
-        "account_id" => id,
-        "amount" => Decimal.to_string(amount),
-        "date" => date,
-        "description" => "#{Enum.at(Factory.merchants_data(), rem(x, length_m))}",
-        "details" => %{
-          "category" => "#{Enum.at(Factory.merchants_data(), rem(x, length_c))}",
-          "counterparty" => %{
-            "name" => "#{Enum.at(Factory.merchants_data(), rem(x, length_c))}",
-            "type" => "organization"
-          },
-          "processing_status" => "complete"
-        },
-        "id" => tx_id,
-        "links" => %{
-          "account" => "https://api.teller.io/accounts/acc_nmfff743stmo5n80t4000",
-          "self" => "https://api.teller.io/accounts/acc_nmfff743stmo5n80t4000/transactions/"
-        },
-        "running_balance" => Decimal.to_string(Decimal.add(ob, tot)),
-        "status" => "posted",
-        "type" => "card_payment"
-      }
+      get_transaction(tx_id)
     end)
     |> Enum.reverse()
   end
@@ -147,13 +120,14 @@ defmodule Teller.Generator do
     length_m = Enum.count(Factory.merchants_data())
     length_c = Enum.count(Factory.categories_data())
 
-    [account_id, flag] =
+    [account_number, flag] =
       tx_id
       |> Base.decode64!()
       |> String.split("-")
 
+    account_id = "acc_#{account_number}"
     flag = String.to_integer(flag)
-    {_, ob} = Map.get(Factory.accounts_constant_data(), "acc_#{account_id}")
+    {_, ob} = Map.get(Factory.accounts_constant_data(), account_id)
     tot = Enum.take(Factory.amounts_data(), flag) |> get_sum()
     {date, amount} = Enum.at(Factory.amounts_data(), flag - 1)
 
@@ -172,8 +146,8 @@ defmodule Teller.Generator do
       },
       "id" => tx_id,
       "links" => %{
-        "account" => "https://api.teller.io/accounts/acc_nmfff743stmo5n80t4000",
-        "self" => "https://api.teller.io/accounts/acc_nmfff743stmo5n80t4000/transactions/"
+        "account" => "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}",
+        "self" => "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/transactions/#{tx_id}"
       },
       "running_balance" => Decimal.to_string(Decimal.add(ob, tot)),
       "status" => "posted",
