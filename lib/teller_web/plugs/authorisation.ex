@@ -10,15 +10,13 @@ defmodule TellerWeb.Plugs.Authorise do
       String.split(account_no_range, "-") |> Enum.map(fn x -> String.to_integer(x) end)
 
     account_id = conn.params["account_id"]
+    transaction_id = conn.params["transaction_id"]
 
-    cond do
-      valid_account_number?(account_id, number1..number2) == true ->
-        conn
-
-      valid_transaction_id?(account_id, number1..number2) == true ->
-        conn
-
-      true ->
+    with true <- valid_account_number?(account_id, number1..number2),
+         true <- valid_transaction_id?(transaction_id, number1..number2) do
+      conn
+    else
+      false ->
         conn
         |> send_resp(404, "not found")
         |> halt()
@@ -46,17 +44,21 @@ defmodule TellerWeb.Plugs.Authorise do
   end
 
   defp valid_transaction_id?(transaction_id, account_number_range) do
-    if not is_nil(transaction_id) do
-      [account_number, _] = Base.decode64!(transaction_id) |> String.split("-")
-      account_number = String.to_integer(account_number)
-
-      if account_number not in account_number_range do
-        false
-      else
-        true
-      end
-    else
+    with {:is_nil, false} <- {:is_nil, is_nil(transaction_id)},
+         {:ok, decoded_transaction_id} <- Base.decode64(transaction_id),
+         [account_number, _] = String.split(decoded_transaction_id, "-"),
+         account_number = String.to_integer(account_number),
+         true <- account_number in account_number_range do
       true
+    else
+      :error ->
+        false
+
+      false ->
+        false
+
+      {:is_nil, true} ->
+        true
     end
   end
 end

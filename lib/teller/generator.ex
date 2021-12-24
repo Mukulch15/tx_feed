@@ -1,5 +1,6 @@
 defmodule Teller.Generator do
   alias Teller.Factory
+  alias Teller.Helpers
 
   def get_accounts(user_id) do
     [_, _, account_no_range] = String.split(user_id, "_")
@@ -73,47 +74,26 @@ defmodule Teller.Generator do
     }
   end
 
-  def get_transactions(id, nil, _count) do
-    _get_transactions(id)
+  def get_transactions(account_id, nil, _count) do
+    _get_transactions(account_id)
   end
 
-  def get_transactions(id, tx_id, count) do
-    lst =
-      _get_transactions(id)
-      |> Stream.map(fn %{"id" => id} = x -> {id, x} end)
-      |> Stream.chunk_by(fn {id, _} -> id == tx_id end)
-      |> Enum.to_list()
-
-    [f, s, t] = lst
-    [h | _] = :lists.reverse(f)
-
-    case count do
-      1 ->
-        [h] ++ s
-
-      0 ->
-        h
-
-      nil ->
-        [h] ++ s ++ t
-
-      n ->
-        [h] ++ s ++ Enum.take(t, n - 1)
-    end
-    |> Stream.map(fn {_, tx} -> tx end)
+  def get_transactions(account_id, tx_id, count) do
+    _get_transactions(account_id)
+    |> Enum.chunk_by(fn tx -> tx["id"] == tx_id end)
     |> Enum.to_list()
+    |> Helpers.paginate_transactions(count)
   end
 
   defp _get_transactions(id) do
-    diff = Test.get_diff()
+    diff = Helpers.get_diff()
     [_, account_number] = String.split(id, "_")
     account_number = String.to_integer(account_number)
 
-    Stream.map(1..diff, fn x ->
+    Enum.map(1..diff, fn x ->
       tx_id = "#{account_number}-#{x}" |> Base.encode64()
       get_transaction(tx_id)
     end)
-    |> Enum.reverse()
   end
 
   def get_transaction(tx_id) do
@@ -128,7 +108,7 @@ defmodule Teller.Generator do
     account_id = "acc_#{account_number}"
     flag = String.to_integer(flag)
     {_, ob} = Map.get(Factory.accounts_constant_data(), account_id)
-    tot = Enum.take(Factory.amounts_data(), flag) |> get_sum()
+    tot = Enum.take(Factory.amounts_data(), flag) |> Helpers.get_sum()
     {date, amount} = Enum.at(Factory.amounts_data(), flag - 1)
 
     %{
@@ -153,10 +133,5 @@ defmodule Teller.Generator do
       "status" => "posted",
       "type" => "card_payment"
     }
-  end
-
-  defp get_sum(lst) do
-    Enum.reduce(lst, Decimal.new(0), fn {_, x}, acc -> Decimal.add(x, acc) end)
-    |> Decimal.negate()
   end
 end

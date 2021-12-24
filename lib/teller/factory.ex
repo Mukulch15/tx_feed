@@ -1,4 +1,7 @@
 defmodule Teller.Factory do
+  alias Teller.Helpers
+  @start_date ~D[2021-09-19]
+
   @merchants ["Uber", "Uber Eats", "Lyft", "Five Guys", "In-N-Out Burger", "Chick-Fil-A"]
 
   @categories [
@@ -20,7 +23,7 @@ defmodule Teller.Factory do
     "acc_12345678907" => {"Donald Trump", Decimal.from_float(1_915_130.88)}
   }
 
-  @amounts Test.calc()
+  @amounts Helpers.calculate_date_amounts()
 
   def merchants_data do
     @merchants
@@ -40,5 +43,9 @@ defmodule Teller.Factory do
 
   def amounts_data do
     @amounts
+  end
+
+  def get_starting_date do
+    @start_date
   end
 end

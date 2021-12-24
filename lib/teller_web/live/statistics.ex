@@ -10,8 +10,9 @@ defmodule TellerWeb.Live.Statistics do
     """
   end
 
-  def mount(_params, _, socket) do
-    if connected?(socket), do: PubSub.subscribe(Teller.PubSub, "user:123")
+  def mount(_params, session, socket) do
+    user_id = session["user_id"]
+    if connected?(socket), do: PubSub.subscribe(Teller.PubSub, user_id)
 
     {:ok, assign(socket, :request, 0)}
   end

@@ -23,7 +23,13 @@ defmodule TellerWeb.Plugs.Authenticate do
     case attempted_auth in @users do
       true ->
         [user_id, _] = Base.decode64!(attempted_auth) |> String.split(":")
-        assign(conn, :user_id, user_id)
+        conn = assign(conn, :user_id, user_id)
+
+        if is_nil(Map.get(conn.private, :plug_session)) do
+          conn
+        else
+          put_session(conn, :user_id, user_id)
+        end
 
       _ ->
         unauthorized(conn)

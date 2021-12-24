@@ -11,12 +11,6 @@ defmodule TellerWeb.Router do
     plug TellerWeb.Plugs.Authenticate
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-    # plug TellerWeb.Plugs.Authorise
-    plug TellerWeb.Plugs.Authenticate
-  end
-
   pipeline :auth_api do
     plug :accepts, ["json"]
     plug TellerWeb.Plugs.Authenticate
