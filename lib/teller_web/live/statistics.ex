@@ -6,7 +6,10 @@ defmodule TellerWeb.Live.Statistics do
 
   def render(assigns) do
     ~H"""
-    Current temperature: <%= @request %>
+    <b>User id:</b> <%= @user_id%>
+    <br>
+    <b>Api count:</b> <%= @request %>
+
     """
   end
 
@@ -14,7 +17,7 @@ defmodule TellerWeb.Live.Statistics do
     user_id = session["user_id"]
     if connected?(socket), do: PubSub.subscribe(Teller.PubSub, user_id)
 
-    {:ok, assign(socket, :request, 0)}
+    {:ok, assign(socket, :request, 0) |> assign(:user_id, user_id)}
   end
 
   def handle_info(:incr, socket) do

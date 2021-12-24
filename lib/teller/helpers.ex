@@ -3,7 +3,6 @@ defmodule Teller.Helpers do
 
   def get_sum(lst) do
     Enum.reduce(lst, Decimal.new(0), fn {_, x}, acc -> Decimal.add(x, acc) end)
-    |> Decimal.negate()
   end
 
   def calculate_date_amounts() do
