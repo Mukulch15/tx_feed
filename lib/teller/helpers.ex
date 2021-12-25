@@ -5,11 +5,11 @@ defmodule Teller.Helpers do
     Enum.reduce(lst, Decimal.new(0), fn {_, x}, acc -> Decimal.add(x, acc) end)
   end
 
-  def calculate_date_amounts() do
+  def calculate_date_amounts(opening_balance) do
     diff = get_diff()
 
-    Enum.map(1..diff, fn y ->
-      # start = Date.new!(2022, 1,1)
+    Enum.reduce_while(1..diff, {[], Decimal.new(opening_balance)}, fn y, acc ->
+      {lst, available} = acc
       d = Date.add(@start_date, y)
       {_, _, q} = Date.to_erl(d)
 
@@ -24,8 +24,16 @@ defmodule Teller.Helpers do
         |> Decimal.mult(Decimal.from_float(5.65))
         |> Decimal.negate()
 
-      {d, m}
+      if Decimal.compare(Decimal.add(available, m), Decimal.from_float(0.0)) == :gt do
+        {:cont, {lst ++ [{d, m}], Decimal.add(available, m)}}
+      else
+        {:halt, {lst ++ [{d, Decimal.negate(available)}]}, Decimal.negate(available)}
+      end
     end)
+  end
+
+  def calculate_date_amounts() do
+    :observer_backend
   end
 
   def paginate_transactions([f, s], count) when length(f) == 1 do
@@ -61,7 +69,7 @@ defmodule Teller.Helpers do
 
     case count do
       "1" ->
-        s ++ [h]
+        [h] ++ s
 
       "0" ->
         [h]
@@ -75,8 +83,9 @@ defmodule Teller.Helpers do
   end
 
   def get_diff() do
-    # end_date = Date.utc_today()
-    end_date = ~D[2022-01-01]
+    end_date = Date.utc_today()
+
+    # end_date = ~D[2022-01-01]
     Date.diff(end_date, @start_date)
   end
 end

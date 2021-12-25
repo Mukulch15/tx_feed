@@ -3,17 +3,16 @@ defmodule TellerWeb.Plugs.Authorise do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    user_id = conn.assigns[:user_id]
-    [_, _, account_no_range] = String.split(user_id, "_")
-
-    [number1, number2] =
-      String.split(account_no_range, "-") |> Enum.map(fn x -> String.to_integer(x) end)
+    token = conn.assigns[:token]
+    [_, account_no_start] = String.split(token, "_")
 
     account_id = conn.params["account_id"]
     transaction_id = conn.params["transaction_id"]
+    start = String.to_integer(account_no_start)
+    till = String.to_integer(account_no_start) + 1
 
-    with true <- valid_account_number?(account_id, number1..number2),
-         true <- valid_transaction_id?(transaction_id, number1..number2) do
+    with true <- valid_account_number?(account_id, start..till),
+         true <- valid_transaction_id?(transaction_id, start..till) do
       conn
     else
       false ->
@@ -48,6 +47,7 @@ defmodule TellerWeb.Plugs.Authorise do
          {:ok, decoded_transaction_id} <- Base.decode64(transaction_id),
          [account_number, _] = String.split(decoded_transaction_id, "-"),
          account_number = String.to_integer(account_number),
+         IO.inspect(account_number),
          true <- account_number in account_number_range do
       true
     else
