@@ -8,11 +8,13 @@ defmodule TellerWeb.Plugs.Authorise do
 
     account_id = conn.params["account_id"]
     transaction_id = conn.params["transaction_id"]
+    from_id = conn.params["from_id"]
     start = String.to_integer(account_no_start)
     till = String.to_integer(account_no_start) + 1
 
     with true <- valid_account_number?(account_id, start..till),
-         true <- valid_transaction_id?(transaction_id, start..till) do
+         true <- valid_transaction_id?(transaction_id, start..till),
+         true <- valid_transaction_id?(from_id, start..till) do
       conn
     else
       false ->
@@ -24,15 +26,11 @@ defmodule TellerWeb.Plugs.Authorise do
 
   defp valid_account_number?(account_id, account_number_range) do
     with {:is_nil, false} <- {:is_nil, is_nil(account_id)},
-         true <- String.match?(account_id, ~r/^acc_\d+$/u) do
-      [_, account_number] = String.split(account_id, "_")
-      account_number = String.to_integer(account_number)
-
-      if account_number not in account_number_range do
-        false
-      else
-        true
-      end
+         true <- String.match?(account_id, ~r/^acc_\d+$/u),
+         [_, account_number] = String.split(account_id, "_"),
+         account_number = String.to_integer(account_number),
+         true <- account_number in account_number_range do
+      true
     else
       {:is_nil, true} ->
         true
@@ -47,18 +45,14 @@ defmodule TellerWeb.Plugs.Authorise do
          {:ok, decoded_transaction_id} <- Base.decode64(transaction_id),
          [account_number, _] = String.split(decoded_transaction_id, "-"),
          account_number = String.to_integer(account_number),
-         IO.inspect(account_number),
          true <- account_number in account_number_range do
       true
     else
-      :error ->
-        false
-
-      false ->
-        false
-
       {:is_nil, true} ->
         true
+
+      _ ->
+        false
     end
   end
 end
