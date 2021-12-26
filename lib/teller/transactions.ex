@@ -1,6 +1,7 @@
 defmodule Teller.Transactions do
   alias Teller.Factory
   alias Teller.Helpers
+  alias Teller.Schemas.{Transaction, TransactionCounterParty, TransactionDetails}
 
   def get_transactions(account_id, nil, _count) do
     _get_transactions(account_id)
@@ -8,7 +9,7 @@ defmodule Teller.Transactions do
 
   def get_transactions(account_id, tx_id, count) do
     _get_transactions(account_id)
-    |> Enum.chunk_by(fn tx -> tx["id"] == tx_id end)
+    |> Enum.chunk_by(fn tx -> tx.id == tx_id end)
     |> Enum.to_list()
     |> Helpers.paginate_transactions(count)
   end
@@ -40,27 +41,27 @@ defmodule Teller.Transactions do
     tot = Enum.take(lst, flag) |> Helpers.get_sum()
     {date, amount} = Enum.at(lst, flag - 1)
 
-    %{
-      "account_id" => account_id,
-      "amount" => Decimal.to_string(amount),
-      "date" => date,
-      "description" => "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
-      "details" => %{
-        "category" => "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
-        "counterparty" => %{
-          "name" => "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
-          "type" => "organization"
+    %Transaction{
+      account_id: account_id,
+      amount: Decimal.to_string(amount),
+      date: date,
+      description: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
+      details: %TransactionDetails{
+        category: "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
+        counterparty: %TransactionCounterParty{
+          name: "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
+          type: "organization"
         },
-        "processing_status" => "complete"
+        processing_status: "complete"
       },
-      "id" => tx_id,
-      "links" => %{
-        "account" => "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}",
-        "self" => "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/transactions/#{tx_id}"
+      id: tx_id,
+      links: %Teller.Schemas.Link{
+        account: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}",
+        self: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/transactions/#{tx_id}"
       },
-      "running_balance" => Decimal.to_string(Decimal.add(opening_balance, tot)),
-      "status" => "posted",
-      "type" => "card_payment"
+      running_balance: Decimal.to_string(Decimal.add(opening_balance, tot)),
+      status: "posted",
+      type: "card_payment"
     }
   end
 end
