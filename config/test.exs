@@ -16,7 +16,7 @@ config :teller, Teller.Repo,
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :teller, TellerWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   secret_key_base: "mUKLPpd8uczzSO6E68nRjoqLXBgB2iMYq7JQ+mmkPUKmy0P+zTy4omdP1LeUumyw",
   server: false
 

@@ -3,13 +3,17 @@ defmodule Teller.Transactions do
   alias Teller.Helpers
   alias Teller.Schemas.{Transaction, TransactionCounterParty, TransactionDetails}
 
+  # TODO
+  # 1. Write documentation.
+  # 2. Write tests.
+
   def get_transactions(account_id, nil, _count) do
     _get_transactions(account_id)
   end
 
-  def get_transactions(account_id, tx_id, count) do
+  def get_transactions(account_id, from_id, count) do
     _get_transactions(account_id)
-    |> Enum.chunk_by(fn tx -> tx.id == tx_id end)
+    |> Enum.chunk_by(fn tx -> tx.id == from_id end)
     |> Enum.to_list()
     |> Helpers.paginate_transactions(count)
   end
@@ -47,9 +51,9 @@ defmodule Teller.Transactions do
       date: date,
       description: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
       details: %TransactionDetails{
-        category: "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
+        category: "#{Enum.at(Factory.categories(), rem(flag, length_c))}",
         counterparty: %TransactionCounterParty{
-          name: "#{Enum.at(Factory.merchants(), rem(flag, length_c))}",
+          name: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
           type: "organization"
         },
         processing_status: "complete"

@@ -6,7 +6,7 @@ defmodule TellerWeb.Live.Statistics do
 
   def render(assigns) do
     ~H"""
-    <b>User id:</b> <%= @user_id%>
+    <b>Token:</b> <%= @token%>
     <br>
     <b>Api count:</b> <%= @request %>
 
@@ -14,10 +14,10 @@ defmodule TellerWeb.Live.Statistics do
   end
 
   def mount(_params, session, socket) do
-    user_id = session["user_id"]
-    if connected?(socket), do: PubSub.subscribe(Teller.PubSub, user_id)
+    token = session["token"]
+    if connected?(socket), do: PubSub.subscribe(Teller.PubSub, token)
 
-    {:ok, assign(socket, :request, 0) |> assign(:user_id, user_id)}
+    {:ok, assign(socket, :request, 0) |> assign(:token, token)}
   end
 
   def handle_info(:incr, socket) do

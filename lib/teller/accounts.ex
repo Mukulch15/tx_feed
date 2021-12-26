@@ -19,7 +19,6 @@ defmodule Teller.Accounts do
     names = Factory.account_names()
     names_length = Enum.count(Factory.account_names())
     last_four = String.slice(account_id, 12..-1)
-    account_number = String.trim_leading(account_id, "acc_")
 
     %Account{
       currency: "USD",
@@ -31,7 +30,6 @@ defmodule Teller.Accounts do
         name: Enum.at(Factory.institutions(), rem(hashed_account_id, institution_length))
       },
       last_four: last_four,
-      account_number: account_number,
       links: %Link{
         balances: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/balances",
         details: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/details",

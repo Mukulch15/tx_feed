@@ -4,7 +4,6 @@ defmodule Teller.Schemas.Account do
   embedded_schema do
     field :currency, :string
     field :enrollment_id, :string
-    field :account_number, :string
     field :last_four, :string
     field :name, :string
     field :subtype, :string

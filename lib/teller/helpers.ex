@@ -82,6 +82,10 @@ defmodule Teller.Helpers do
     end
   end
 
+  def paginate_transactions(_, _) do
+    []
+  end
+
   def get_diff() do
     end_date = Date.utc_today()
 
