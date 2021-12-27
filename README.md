@@ -3,12 +3,12 @@
 This application acts as a sandbox for teller bank apis. Aim of the application is to mimick accounts and transaction details
 so that developers can test these apis on their interface without the need for any actual bank accounts.
 The application gives access to the following apis:
-  GET /accounts
-  GET /accounts/:account_id
-  GET /accounts/:account_id/details
-  GET /accounts/:account_id/balances
-  GET /accounts/:account_id/transactions
-  GET /accounts/:account_id/transactions/:transaction_id
+  * GET /accounts
+  * GET /accounts/:account_id
+  * GET /accounts/:account_id/details
+  * GET /accounts/:account_id/balances
+  * GET /accounts/:account_id/transactions
+  * GET /accounts/:account_id/transactions/:transaction_id
 
 To start your Phoenix server:
 
