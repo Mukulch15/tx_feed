@@ -1,6 +1,14 @@
 defmodule Teller.TransactionsTest do
   alias Teller.Transactions
   use ExUnit.Case
+  import Mox
+
+  setup do
+    Teller.MockDateAPI
+    |> stub(:get_end_date, fn -> Date.utc_today() end)
+
+    :ok
+  end
 
   test "get_transaction/1 displays correct results" do
     assert %Teller.Schemas.Transaction{

@@ -87,9 +87,11 @@ defmodule Teller.Helpers do
   end
 
   def get_diff() do
-    end_date = Date.utc_today()
-
+    end_date = get_end_date()
     # end_date = ~D[2022-01-01]
     Date.diff(end_date, @start_date)
   end
+
+  defp date_api_client, do: Application.get_env(:teller, :date_api_client)
+  defp get_end_date, do: date_api_client().get_end_date
 end

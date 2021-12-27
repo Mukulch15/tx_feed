@@ -7,14 +7,15 @@ defmodule TellerWeb.Plugs.Authorise do
     [_, account_no_start] = String.split(token, "_")
 
     account_id = conn.params["account_id"]
+
     transaction_id = conn.params["transaction_id"]
     from_id = conn.params["from_id"]
     start = String.to_integer(account_no_start)
     till = String.to_integer(account_no_start) + 1
 
     with true <- valid_account_number?(account_id, start..till),
-         true <- valid_transaction_id?(transaction_id, start..till),
-         true <- valid_transaction_id?(from_id, start..till) do
+         true <- valid_transaction_id?(transaction_id, account_id),
+         true <- valid_transaction_id?(from_id, account_id) do
       conn
     else
       false ->
@@ -40,12 +41,12 @@ defmodule TellerWeb.Plugs.Authorise do
     end
   end
 
-  defp valid_transaction_id?(transaction_id, account_number_range) do
+  defp valid_transaction_id?(transaction_id, account_id) do
     with {:is_nil, false} <- {:is_nil, is_nil(transaction_id)},
          {:ok, decoded_transaction_id} <- Base.decode64(transaction_id),
          [account_number, _] = String.split(decoded_transaction_id, "-"),
          account_number = String.to_integer(account_number),
-         true <- account_number in account_number_range do
+         true <- "acc_#{account_number}" == account_id do
       true
     else
       {:is_nil, true} ->

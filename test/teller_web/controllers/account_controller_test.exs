@@ -1,6 +1,10 @@
 defmodule TellerWeb.AccountControllerTest do
   use TellerWeb.ConnCase
 
+  import Mox
+
+  setup :verify_on_exit!
+
   setup %{conn: conn} do
     conn =
       conn
@@ -129,13 +133,16 @@ defmodule TellerWeb.AccountControllerTest do
 
   describe "test GET /accounts/:account_id/balances" do
     test "GET /accounts/:account_id/balances sends success response", %{conn: conn} do
+      Teller.MockDateAPI
+      |> expect(:get_end_date, fn -> ~D[2021-12-25] end)
+
       conn = get(conn, "/accounts/acc_456789012323/balances")
 
       assert %{
                "account_balances" => %{
                  "account_id" => "acc_456789012323",
-                 "available" => "6507340.05",
-                 "ledger" => "6507340.05",
+                 "available" => "6519120.30",
+                 "ledger" => "6519120.30",
                  "links" => %{
                    "account" => "http://localhost:4000/accounts/acc_456789012323",
                    "balances" => nil,
