@@ -1,12 +1,7 @@
 defmodule TellerWeb.Plugs.Authenticate do
   import Plug.Conn
   @realm "Basic realm=\"Dashboard\""
-  @users [
-    "dGVzdF91c2VyMV8xMjM0NTY3ODkwMC0xMjM0NTY3ODkwMjo=",
-    "dGVzdF91c2VyMV8xMjM0NTY3ODkwMy0xMjM0NTY3ODkwNTo=",
-    "dGVzdF91c2VyMV8xMjM0NTY3ODkwNi0xMjM0NTY3ODkwNzo="
-  ]
-  # @users ["mu"]
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
@@ -20,15 +15,17 @@ defmodule TellerWeb.Plugs.Authenticate do
   end
 
   defp verify(conn, attempted_auth) do
-    case attempted_auth in @users do
+    attempted_auth = Base.decode64!(attempted_auth)
+
+    case String.match?(attempted_auth, ~r/^test_\d{12}:$/u) do
       true ->
-        [user_id, _] = Base.decode64!(attempted_auth) |> String.split(":")
-        conn = assign(conn, :user_id, user_id)
+        token = String.trim_trailing(attempted_auth, ":")
+        conn = assign(conn, :token, token)
 
         if is_nil(Map.get(conn.private, :plug_session)) do
           conn
         else
-          put_session(conn, :user_id, user_id)
+          put_session(conn, :token, token)
         end
 
       _ ->

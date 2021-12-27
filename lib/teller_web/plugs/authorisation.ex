@@ -3,17 +3,18 @@ defmodule TellerWeb.Plugs.Authorise do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    user_id = conn.assigns[:user_id]
-    [_, _, account_no_range] = String.split(user_id, "_")
-
-    [number1, number2] =
-      String.split(account_no_range, "-") |> Enum.map(fn x -> String.to_integer(x) end)
+    token = conn.assigns[:token]
+    [_, account_no_start] = String.split(token, "_")
 
     account_id = conn.params["account_id"]
     transaction_id = conn.params["transaction_id"]
+    from_id = conn.params["from_id"]
+    start = String.to_integer(account_no_start)
+    till = String.to_integer(account_no_start) + 1
 
-    with true <- valid_account_number?(account_id, number1..number2),
-         true <- valid_transaction_id?(transaction_id, number1..number2) do
+    with true <- valid_account_number?(account_id, start..till),
+         true <- valid_transaction_id?(transaction_id, start..till),
+         true <- valid_transaction_id?(from_id, start..till) do
       conn
     else
       false ->
@@ -25,15 +26,11 @@ defmodule TellerWeb.Plugs.Authorise do
 
   defp valid_account_number?(account_id, account_number_range) do
     with {:is_nil, false} <- {:is_nil, is_nil(account_id)},
-         true <- String.match?(account_id, ~r/^acc_\d+$/u) do
-      [_, account_number] = String.split(account_id, "_")
-      account_number = String.to_integer(account_number)
-
-      if account_number not in account_number_range do
-        false
-      else
-        true
-      end
+         true <- String.match?(account_id, ~r/^acc_\d+$/u),
+         [_, account_number] = String.split(account_id, "_"),
+         account_number = String.to_integer(account_number),
+         true <- account_number in account_number_range do
+      true
     else
       {:is_nil, true} ->
         true
@@ -51,14 +48,11 @@ defmodule TellerWeb.Plugs.Authorise do
          true <- account_number in account_number_range do
       true
     else
-      :error ->
-        false
-
-      false ->
-        false
-
       {:is_nil, true} ->
         true
+
+      _ ->
+        false
     end
   end
 end
