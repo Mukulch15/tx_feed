@@ -1,4 +1,5 @@
 defmodule Teller.Schemas.Transaction do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   embedded_schema do
