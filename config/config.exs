@@ -24,7 +24,7 @@ config :teller, TellerWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :teller, Teller.Mailer, adapter: Swoosh.Adapters.Local
+config :teller, :date_api_client, Teller.Clients.DateApiClient
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false

@@ -1,6 +1,10 @@
 defmodule Teller.AccountsTest do
   alias Teller.Accounts
+  import Mox
+
   use ExUnit.Case
+
+  setup :verify_on_exit!
 
   test "get_account/1 displayes correct results" do
     assert %Teller.Schemas.Account{
@@ -74,10 +78,13 @@ defmodule Teller.AccountsTest do
   end
 
   test "get_account_balances/1 displays correct results" do
+    Teller.MockDateAPI
+    |> expect(:get_end_date, fn -> ~D[2021-12-25] end)
+
     assert %Teller.Schemas.AccountBalances{
              account_id: "acc_456789012332",
-             available: Decimal.from_float(117_750_957.05),
-             ledger: Decimal.from_float(117_750_957.05),
+             available: Decimal.new("117762737.30"),
+             ledger: Decimal.new("117762737.30"),
              links: %Teller.Schemas.Link{
                account: "http://localhost:4000/accounts/acc_456789012332",
                balances: nil,
