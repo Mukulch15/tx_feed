@@ -51,7 +51,7 @@ defmodule TellerWeb.Router do
 
     scope "/", TellerWeb do
       pipe_through :browser
-      live "/dashboard", Live.Statistics
+      live "/statistics", Live.Statistics
 
       # live_dashboard "/dashboard", metrics: TellerWeb.Telemetry
     end
