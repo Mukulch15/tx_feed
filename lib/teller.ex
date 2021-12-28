@@ -20,7 +20,7 @@ defmodule Teller do
     A dashboard is accessible on http://localhost:4000/statistics which gives you the count of api calls for a given token.
 
     Technical specification:
-      * The api is accessed using a token in the following format test_456789012332.
+      * The api is accessed using a token in the following format test_456789012332(test_ followed by a 12 digit number).
       * The 12 digit random number acts as a seed for the account numbers accessible through the given api token.
       * Example in the above case the accounts with numbers 456789012332 and 456789012333 will be generated and accessible.
       * The transaction feed is generated for 90 days from the current date and will give you the same data for each token and account id each
