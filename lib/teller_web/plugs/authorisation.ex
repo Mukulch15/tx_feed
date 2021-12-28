@@ -1,4 +1,8 @@
 defmodule TellerWeb.Plugs.Authorise do
+  @moduledoc """
+    Authorisation plug for the apis.
+    Authorises the api token, transaction_id and from_id parameters based on the token.
+  """
   import Plug.Conn
   def init(opts), do: opts
 

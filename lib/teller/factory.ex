@@ -1,4 +1,5 @@
 defmodule Teller.Factory do
+  @moduledoc false
   def merchants do
     ["Uber", "Uber Eats", "Lyft", "Five Guys", "In-N-Out Burger", "Chick-Fil-A"]
   end

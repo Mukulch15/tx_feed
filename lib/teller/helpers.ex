@@ -1,4 +1,7 @@
 defmodule Teller.Helpers do
+  @moduledoc """
+    Consists of auxillary functions to help generate the feed.
+  """
   @start_date ~D[2021-09-19]
 
   @doc """
