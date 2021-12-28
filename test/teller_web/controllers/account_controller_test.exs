@@ -141,8 +141,8 @@ defmodule TellerWeb.AccountControllerTest do
       assert %{
                "account_balances" => %{
                  "account_id" => "acc_456789012323",
-                 "available" => "6519120.30",
-                 "ledger" => "6519120.30",
+                 "available" => "6317985.95",
+                 "ledger" => "6317985.95",
                  "links" => %{
                    "account" => "http://localhost:4000/accounts/acc_456789012323",
                    "balances" => nil,

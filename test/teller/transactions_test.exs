@@ -13,7 +13,7 @@ defmodule Teller.TransactionsTest do
   test "get_transaction/1 displays correct results" do
     assert %Teller.Schemas.Transaction{
              account_id: "acc_456789012323",
-             amount: "-11695.50",
+             amount: "-13769.05",
              date: ~D[2021-09-20],
              description: "Uber Eats",
              details: %Teller.Schemas.TransactionDetails{
@@ -33,7 +33,7 @@ defmodule Teller.TransactionsTest do
                  "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTE=",
                transactions: nil
              },
-             running_balance: "7638543.50",
+             running_balance: "7636469.95",
              status: "posted",
              type: "card_payment"
            } == Transactions.get_transaction("NDU2Nzg5MDEyMzIzLTE=")
@@ -44,7 +44,7 @@ defmodule Teller.TransactionsTest do
       assert [
                %Teller.Schemas.Transaction{
                  account_id: "acc_456789012323",
-                 amount: "-11695.50",
+                 amount: "-13769.05",
                  date: ~D[2021-09-20],
                  description: "Uber Eats",
                  details: %Teller.Schemas.TransactionDetails{
@@ -64,13 +64,13 @@ defmodule Teller.TransactionsTest do
                      "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTE=",
                    transactions: nil
                  },
-                 running_balance: "7638543.50",
+                 running_balance: "7636469.95",
                  status: "posted",
                  type: "card_payment"
                },
                %Teller.Schemas.Transaction{
                  account_id: "acc_456789012323",
-                 amount: "-11706.80",
+                 amount: "-13780.35",
                  date: ~D[2021-09-21],
                  description: "Lyft",
                  details: %Teller.Schemas.TransactionDetails{
@@ -90,13 +90,13 @@ defmodule Teller.TransactionsTest do
                      "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTI=",
                    transactions: nil
                  },
-                 running_balance: "7626836.70",
+                 running_balance: "7622689.60",
                  status: "posted",
                  type: "card_payment"
                },
                %Teller.Schemas.Transaction{
                  account_id: "acc_456789012323",
-                 amount: "-11718.10",
+                 amount: "-13791.65",
                  date: ~D[2021-09-22],
                  description: "Five Guys",
                  details: %Teller.Schemas.TransactionDetails{
@@ -116,7 +116,7 @@ defmodule Teller.TransactionsTest do
                      "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTM=",
                    transactions: nil
                  },
-                 running_balance: "7615118.60",
+                 running_balance: "7608897.95",
                  status: "posted",
                  type: "card_payment"
                }

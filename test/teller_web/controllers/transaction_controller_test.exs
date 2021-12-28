@@ -23,7 +23,7 @@ defmodule TellerWeb.TransactionControllerTest do
       assert %{
                "transaction" => %{
                  "account_id" => "acc_456789012323",
-                 "amount" => "-11740.70",
+                 "amount" => "-13814.25",
                  "date" => "2021-09-24",
                  "description" => "Chick-Fil-A",
                  "details" => %{
@@ -43,7 +43,7 @@ defmodule TellerWeb.TransactionControllerTest do
                      "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTU=",
                    "transactions" => nil
                  },
-                 "running_balance" => "7591648.50",
+                 "running_balance" => "7581280.75",
                  "status" => "posted",
                  "type" => "card_payment"
                }
@@ -86,7 +86,7 @@ defmodule TellerWeb.TransactionControllerTest do
                "transactions" => [
                  %{
                    "account_id" => "acc_456789012323",
-                   "amount" => "-11695.50",
+                   "amount" => "-13769.05",
                    "date" => "2021-09-20",
                    "description" => "Uber Eats",
                    "details" => %{
@@ -103,13 +103,13 @@ defmodule TellerWeb.TransactionControllerTest do
                        "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTE=",
                      "transactions" => nil
                    },
-                   "running_balance" => "7638543.50",
+                   "running_balance" => "7636469.95",
                    "status" => "posted",
                    "type" => "card_payment"
                  },
                  %{
                    "account_id" => "acc_456789012323",
-                   "amount" => "-11706.80",
+                   "amount" => "-13780.35",
                    "date" => "2021-09-21",
                    "description" => "Lyft",
                    "details" => %{
@@ -126,7 +126,7 @@ defmodule TellerWeb.TransactionControllerTest do
                        "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTI=",
                      "transactions" => nil
                    },
-                   "running_balance" => "7626836.70",
+                   "running_balance" => "7622689.60",
                    "status" => "posted",
                    "type" => "card_payment"
                  }
@@ -148,6 +148,172 @@ defmodule TellerWeb.TransactionControllerTest do
         |> get("/accounts/acc_456789012323/transactions")
 
       assert conn.status == 401
+    end
+  end
+
+  describe "GET /accounts/:account_id/transactions/?from_id=<from_id>&count=<count> sends paginated response" do
+    test "from_id is the last transaction - we should get two results regardless of count", %{
+      conn: conn
+    } do
+      Teller.MockDateAPI
+      |> stub(:get_end_date, fn -> ~D[2021-12-25] end)
+
+      conn =
+        get(
+          conn,
+          "/accounts/acc_456789012323/transactions?from_id=NDU2Nzg5MDEyMzIzLTk3&count=5"
+        )
+
+      assert %{
+               "transactions" => [
+                 %{
+                   "account_id" => "acc_456789012323",
+                   "amount" => "-13831.20",
+                   "date" => "2021-12-24",
+                   "description" => "Uber",
+                   "details" => %{
+                     "category" => "accommodation",
+                     "counterparty" => %{
+                       "name" => "Uber",
+                       "type" => "organization"
+                     },
+                     "processing_status" => "complete"
+                   },
+                   "id" => "NDU2Nzg5MDEyMzIzLTk2",
+                   "links" => %{
+                     "account" => "http://localhost:4000/accounts/acc_456789012323",
+                     "balances" => nil,
+                     "details" => nil,
+                     "self" =>
+                       "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTk2",
+                     "transactions" => nil
+                   },
+                   "running_balance" => "6331828.45",
+                   "status" => "posted",
+                   "type" => "card_payment"
+                 },
+                 %{
+                   "account_id" => "acc_456789012323",
+                   "amount" => "-13842.50",
+                   "date" => "2021-12-25",
+                   "description" => "Uber Eats",
+                   "details" => %{
+                     "category" => "advertising",
+                     "counterparty" => %{
+                       "name" => "Uber Eats",
+                       "type" => "organization"
+                     },
+                     "processing_status" => "complete"
+                   },
+                   "id" => "NDU2Nzg5MDEyMzIzLTk3",
+                   "links" => %{
+                     "account" => "http://localhost:4000/accounts/acc_456789012323",
+                     "balances" => nil,
+                     "details" => nil,
+                     "self" =>
+                       "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTk3",
+                     "transactions" => nil
+                   },
+                   "running_balance" => "6317985.95",
+                   "status" => "posted",
+                   "type" => "card_payment"
+                 }
+               ]
+             } == json_response(conn, 200)
+    end
+
+    test "from_id is the first transaction", %{conn: conn} do
+      Teller.MockDateAPI
+      |> stub(:get_end_date, fn -> ~D[2021-12-25] end)
+
+      conn =
+        get(
+          conn,
+          "/accounts/acc_456789012323/transactions?from_id=NDU2Nzg5MDEyMzIzLTg=&count=2"
+        )
+
+      assert %{
+               "transactions" => [
+                 %{
+                   "account_id" => "acc_456789012323",
+                   "amount" => "-13836.85",
+                   "date" => "2021-09-26",
+                   "description" => "Uber Eats",
+                   "details" => %{
+                     "category" => "charity",
+                     "counterparty" => %{
+                       "name" => "Uber Eats",
+                       "type" => "organization"
+                     },
+                     "processing_status" => "complete"
+                   },
+                   "id" => "NDU2Nzg5MDEyMzIzLTc=",
+                   "links" => %{
+                     "account" => "http://localhost:4000/accounts/acc_456789012323",
+                     "balances" => nil,
+                     "details" => nil,
+                     "self" =>
+                       "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTc=",
+                     "transactions" => nil
+                   },
+                   "running_balance" => "7553618.35",
+                   "status" => "posted",
+                   "type" => "card_payment"
+                 },
+                 %{
+                   "account_id" => "acc_456789012323",
+                   "amount" => "-13848.15",
+                   "date" => "2021-09-27",
+                   "description" => "Lyft",
+                   "details" => %{
+                     "category" => "accommodation",
+                     "counterparty" => %{
+                       "name" => "Lyft",
+                       "type" => "organization"
+                     },
+                     "processing_status" => "complete"
+                   },
+                   "id" => "NDU2Nzg5MDEyMzIzLTg=",
+                   "links" => %{
+                     "account" => "http://localhost:4000/accounts/acc_456789012323",
+                     "balances" => nil,
+                     "details" => nil,
+                     "self" =>
+                       "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTg=",
+                     "transactions" => nil
+                   },
+                   "running_balance" => "7539770.20",
+                   "status" => "posted",
+                   "type" => "card_payment"
+                 },
+                 %{
+                   "account_id" => "acc_456789012323",
+                   "amount" => "-13859.45",
+                   "date" => "2021-09-28",
+                   "description" => "Five Guys",
+                   "details" => %{
+                     "category" => "advertising",
+                     "counterparty" => %{
+                       "name" => "Five Guys",
+                       "type" => "organization"
+                     },
+                     "processing_status" => "complete"
+                   },
+                   "id" => "NDU2Nzg5MDEyMzIzLTk=",
+                   "links" => %{
+                     "account" => "http://localhost:4000/accounts/acc_456789012323",
+                     "balances" => nil,
+                     "details" => nil,
+                     "self" =>
+                       "http://localhost:4000/accounts/acc_456789012323/transactions/NDU2Nzg5MDEyMzIzLTk=",
+                     "transactions" => nil
+                   },
+                   "running_balance" => "7525910.75",
+                   "status" => "posted",
+                   "type" => "card_payment"
+                 }
+               ]
+             } == json_response(conn, 200)
     end
   end
 end
