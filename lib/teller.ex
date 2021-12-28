@@ -25,6 +25,7 @@ defmodule Teller do
       * Example in the above case the accounts with numbers 456789012332 and 456789012333 will be generated and accessible.
       * The transaction feed is generated for 90 days from the current date and will give you the same data for each token and account id each
         and everytime. Even after app restarts.
+      * Given the requirement, the first result in paginated result will be the transaction before the transaction with id=from_id.
       * The dashboard is powered by live view and phoenix pubsub.
       * We have unit tests for transactions and account as well as integration tests for the respective controllers and
         live view dashboard. I have mocked the end date in the test cases because we want the balance to remain constant

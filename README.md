@@ -10,6 +10,7 @@ The application gives access to the following apis:
   * GET /accounts/:account_id/transactions
   * GET /accounts/:account_id/transactions/:transaction_id
 The transaction feed is generated for 90 days from the current date and the latest transaction will be the last result in the api.
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
