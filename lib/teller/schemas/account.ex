@@ -1,4 +1,5 @@
 defmodule Teller.Schemas.Account do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   embedded_schema do
@@ -15,6 +16,7 @@ defmodule Teller.Schemas.Account do
 end
 
 defmodule Teller.Schemas.AccountBalances do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   @primary_key false
@@ -27,6 +29,7 @@ defmodule Teller.Schemas.AccountBalances do
 end
 
 defmodule Teller.Schemas.AccountDetails do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   @primary_key false

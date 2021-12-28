@@ -83,8 +83,8 @@ defmodule Teller.AccountsTest do
 
     assert %Teller.Schemas.AccountBalances{
              account_id: "acc_456789012332",
-             available: Decimal.new("117762737.30"),
-             ledger: Decimal.new("117762737.30"),
+             available: Decimal.new("117745199.70"),
+             ledger: Decimal.new("117745199.70"),
              links: %Teller.Schemas.Link{
                account: "http://localhost:4000/accounts/acc_456789012332",
                balances: nil,

@@ -1,4 +1,5 @@
 defmodule TellerWeb.AccountController do
+  @moduledoc false
   alias Teller.Accounts
   use TellerWeb, :controller
 

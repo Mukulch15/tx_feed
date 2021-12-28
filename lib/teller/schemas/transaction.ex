@@ -1,4 +1,5 @@
 defmodule Teller.Schemas.Transaction do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   embedded_schema do
@@ -15,6 +16,7 @@ defmodule Teller.Schemas.Transaction do
 end
 
 defmodule Teller.Schemas.TransactionDetails do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   @primary_key false
@@ -26,6 +28,7 @@ defmodule Teller.Schemas.TransactionDetails do
 end
 
 defmodule Teller.Schemas.TransactionCounterParty do
+  @moduledoc false
   use Ecto.Schema
   @derive Jason.Encoder
   @primary_key false

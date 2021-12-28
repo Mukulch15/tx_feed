@@ -1,4 +1,7 @@
 defmodule TellerWeb.Plugs.Authenticate do
+  @moduledoc """
+    Basic auth plug for the apis.
+  """
   import Plug.Conn
   @realm "Basic realm=\"Dashboard\""
 

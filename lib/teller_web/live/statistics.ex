@@ -1,6 +1,8 @@
 defmodule TellerWeb.Live.Statistics do
-  # If you generated an app with mix phx.new --live,
-  # the line below would be: use MyAppWeb, :live_view
+  @moduledoc """
+    Generates live view dashboard that gives the count of api calls for a given token.
+    It uses phoenix pubsub to increment the api count to the live view process.
+  """
   alias Phoenix.PubSub
   use Phoenix.LiveView
 
@@ -9,7 +11,6 @@ defmodule TellerWeb.Live.Statistics do
     <b>Token:</b> <%= @token%>
     <br>
     <b>Api count:</b> <%= @request %>
-
     """
   end
 

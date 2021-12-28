@@ -1,4 +1,5 @@
 defmodule TellerWeb.TransactionController do
+  @moduledoc false
   alias Teller.Transactions
   use TellerWeb, :controller
 
