@@ -1,4 +1,4 @@
-defmodule TellerWeb.Plugs.AutheticationPlugTest do
+defmodule TellerWeb.Plugs.AuthenticationPlugTest do
   use TellerWeb.ConnCase
 
   test "conn is authenticated when the credentials are absent" do

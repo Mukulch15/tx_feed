@@ -1,4 +1,4 @@
-defmodule TellerWeb.Plugs.AutheticationPlugTest do
+defmodule TellerWeb.Plugs.AuthorizationPlugTest do
   use TellerWeb.ConnCase
 
   test "404 when account_id is not found" do
