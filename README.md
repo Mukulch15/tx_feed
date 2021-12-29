@@ -16,6 +16,6 @@ To start your Phoenix server:
   * Install dependencies with `mix deps.get`
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 In order to start using the apis, you have to use basic auth. Enter the username in the following format:
-test_ followed by a 12 digit number. The password must be blank.
+test_ followed by a 12 digit number. Example: test_456789012321. The password must be blank.
 The base url is http://localhost:4000.
 A dashboard is accessible on http://localhost:4000/statistics which gives you the count of api calls for a given token.
