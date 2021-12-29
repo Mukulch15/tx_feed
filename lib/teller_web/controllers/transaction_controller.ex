@@ -17,7 +17,14 @@ defmodule TellerWeb.TransactionController do
     token = conn.assigns.token
     Phoenix.PubSub.broadcast(Teller.PubSub, token, :incr)
 
-    transaction = Transactions.get_transaction(params["transaction_id"])
-    json(conn, %{transaction: transaction})
+    case  Transactions.get_transaction(params["transaction_id"]) do
+      [] ->
+        conn
+        |>put_status(404)
+        |> json(%{transaction: []})
+      transaction ->
+        json(conn, %{transaction: transaction})
+    end
+
   end
 end
