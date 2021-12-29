@@ -70,32 +70,34 @@ defmodule Teller.Transactions do
     # Fetches a list containing datewise transaction amounts
     {lst, _} = Helpers.calculate_date_amounts(opening_balance, salt)
     tot = Enum.take(lst, flag) |> Helpers.get_sum()
-    case  Enum.at(lst, flag - 1) do
-      {date, amount} -> %Transaction{
-        account_id: account_id,
-        amount: Decimal.to_string(amount),
-        date: date,
-        description: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
-        details: %TransactionDetails{
-          category: "#{Enum.at(Factory.categories(), rem(flag, length_c))}",
-          counterparty: %TransactionCounterParty{
-            name: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
-            type: "organization"
+
+    case Enum.at(lst, flag - 1) do
+      {date, amount} ->
+        %Transaction{
+          account_id: account_id,
+          amount: Decimal.to_string(amount),
+          date: date,
+          description: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
+          details: %TransactionDetails{
+            category: "#{Enum.at(Factory.categories(), rem(flag, length_c))}",
+            counterparty: %TransactionCounterParty{
+              name: "#{Enum.at(Factory.merchants(), rem(flag, length_m))}",
+              type: "organization"
+            },
+            processing_status: "complete"
           },
-          processing_status: "complete"
-        },
-        id: tx_id,
-        links: %Teller.Schemas.Link{
-          account: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}",
-          self: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/transactions/#{tx_id}"
-        },
-        running_balance: Decimal.to_string(Decimal.add(opening_balance, tot)),
-        status: "posted",
-        type: "card_payment"
-      }
-      _ -> []
+          id: tx_id,
+          links: %Teller.Schemas.Link{
+            account: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}",
+            self: "#{TellerWeb.Endpoint.url()}/accounts/#{account_id}/transactions/#{tx_id}"
+          },
+          running_balance: Decimal.to_string(Decimal.add(opening_balance, tot)),
+          status: "posted",
+          type: "card_payment"
+        }
+
+      _ ->
+        []
     end
-
-
   end
 end
