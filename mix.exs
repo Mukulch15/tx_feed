@@ -51,7 +51,8 @@ defmodule Teller.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.5"},
       {:mox, "~> 1.0", only: :test},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 

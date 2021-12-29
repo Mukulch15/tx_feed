@@ -27,11 +27,8 @@ defmodule TellerWeb.TransactionControllerTest do
                  "date" => "2021-09-24",
                  "description" => "Chick-Fil-A",
                  "details" => %{
-                   "category" => "advertising",
-                   "counterparty" => %{
-                     "name" => "Chick-Fil-A",
-                     "type" => "organization"
-                   },
+                   "category" => "dining",
+                   "counterparty" => %{"name" => "Chick-Fil-A", "type" => "organization"},
                    "processing_status" => "complete"
                  },
                  "id" => "NDU2Nzg5MDEyMzIzLTU=",
@@ -170,13 +167,10 @@ defmodule TellerWeb.TransactionControllerTest do
                    "account_id" => "acc_456789012323",
                    "amount" => "-13831.20",
                    "date" => "2021-12-24",
-                   "description" => "Uber",
+                   "description" => "CVS",
                    "details" => %{
-                     "category" => "accommodation",
-                     "counterparty" => %{
-                       "name" => "Uber",
-                       "type" => "organization"
-                     },
+                     "category" => "investment",
+                     "counterparty" => %{"name" => "CVS", "type" => "organization"},
                      "processing_status" => "complete"
                    },
                    "id" => "NDU2Nzg5MDEyMzIzLTk2",
@@ -196,13 +190,10 @@ defmodule TellerWeb.TransactionControllerTest do
                    "account_id" => "acc_456789012323",
                    "amount" => "-13842.50",
                    "date" => "2021-12-25",
-                   "description" => "Uber Eats",
+                   "description" => "Duane Reade",
                    "details" => %{
-                     "category" => "advertising",
-                     "counterparty" => %{
-                       "name" => "Uber Eats",
-                       "type" => "organization"
-                     },
+                     "category" => "loan",
+                     "counterparty" => %{"name" => "Duane Reade", "type" => "organization"},
                      "processing_status" => "complete"
                    },
                    "id" => "NDU2Nzg5MDEyMzIzLTk3",
@@ -238,13 +229,10 @@ defmodule TellerWeb.TransactionControllerTest do
                    "account_id" => "acc_456789012323",
                    "amount" => "-13836.85",
                    "date" => "2021-09-26",
-                   "description" => "Uber Eats",
+                   "description" => "Apple",
                    "details" => %{
-                     "category" => "charity",
-                     "counterparty" => %{
-                       "name" => "Uber Eats",
-                       "type" => "organization"
-                     },
+                     "category" => "electronics",
+                     "counterparty" => %{"name" => "Apple", "type" => "organization"},
                      "processing_status" => "complete"
                    },
                    "id" => "NDU2Nzg5MDEyMzIzLTc=",
@@ -264,13 +252,10 @@ defmodule TellerWeb.TransactionControllerTest do
                    "account_id" => "acc_456789012323",
                    "amount" => "-13848.15",
                    "date" => "2021-09-27",
-                   "description" => "Lyft",
+                   "description" => "Amazon",
                    "details" => %{
-                     "category" => "accommodation",
-                     "counterparty" => %{
-                       "name" => "Lyft",
-                       "type" => "organization"
-                     },
+                     "category" => "entertainment",
+                     "counterparty" => %{"name" => "Amazon", "type" => "organization"},
                      "processing_status" => "complete"
                    },
                    "id" => "NDU2Nzg5MDEyMzIzLTg=",
@@ -290,13 +275,10 @@ defmodule TellerWeb.TransactionControllerTest do
                    "account_id" => "acc_456789012323",
                    "amount" => "-13859.45",
                    "date" => "2021-09-28",
-                   "description" => "Five Guys",
+                   "description" => "Walmart",
                    "details" => %{
-                     "category" => "advertising",
-                     "counterparty" => %{
-                       "name" => "Five Guys",
-                       "type" => "organization"
-                     },
+                     "category" => "fuel",
+                     "counterparty" => %{"name" => "Walmart", "type" => "organization"},
                      "processing_status" => "complete"
                    },
                    "id" => "NDU2Nzg5MDEyMzIzLTk=",

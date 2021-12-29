@@ -20,8 +20,6 @@ defmodule TellerWeb.Router do
 
   scope "/", TellerWeb do
     pipe_through :browser
-
-    get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.

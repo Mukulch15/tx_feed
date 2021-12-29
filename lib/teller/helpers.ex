@@ -17,7 +17,7 @@ defmodule Teller.Helpers do
     and opening balance. The function also takes a salt which is basically the hash of the account_id within a range
     of 0..400. This is done to make the amount of each transaction different for each account.
     Example for the following call Teller.Helpers.calculate_date_amounts(Decimal.new(77474), 7) output will be:
-    {[
+    `{[
       {~D[2021-09-20], #Decimal<-11735.05>},
       {~D[2021-09-21], #Decimal<-11746.35>},
       {~D[2021-09-22], #Decimal<-11757.65>},
@@ -25,7 +25,7 @@ defmodule Teller.Helpers do
       {~D[2021-09-24], #Decimal<-11780.25>},
       {~D[2021-09-25], #Decimal<-11791.55>},
       {~D[2021-09-26], #Decimal<-6894.20>}
-    ], #Decimal<-6894.20>}
+    ], #Decimal<-6894.20>}`
   """
   def calculate_date_amounts(opening_balance, salt) do
     diff = get_diff()
