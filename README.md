@@ -1,6 +1,6 @@
-# Teller
 
-This application acts as a sandbox for teller bank apis. Aim of the application is to mimick accounts and transaction details
+
+This application acts as a sandbox for  bank apis. Aim of the application is to mimick accounts and transaction details
 so that developers can test these apis on their interface without the need for any actual bank accounts.
 The application gives access to the following apis:
   * GET /accounts
